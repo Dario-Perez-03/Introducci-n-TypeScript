@@ -41,7 +41,20 @@ export const listarEpas = async (req, res) => {
 export const buscarEpaPorId = async (req, res) => {
   try {
     const id_epa_pk = req.params.id_epa_pk;
-    const result = await pool.query('SELECT * FROM epas WHERE id_epa_pk = $1', [id_epa_pk]);
+
+    const result = await pool.query(`
+      SELECT 
+        e.id_epa_pk,
+        e.id_cultivo_fk,
+        e.estado_epa,
+        e.id_tipo_epa_fk,
+        e.nombre_epa,
+        e.descripcion_epa,
+        t.nombre_tipo_epa
+      FROM epas e
+      JOIN tipos_epas t ON e.id_tipo_epa_fk = t.id_tipo_epa_pk
+      WHERE e.id_epa_pk = $1
+    `, [id_epa_pk]);
 
     if (result.rows.length > 0) {
       res.status(200).json({ 

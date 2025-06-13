@@ -172,6 +172,7 @@ function mostrarEliminarFormEPA() {
 
 function mostrarResultadoEPA(mensaje: string | object) {
   const contenedor = document.getElementById("resultado-epa")!;
+
   if (typeof mensaje === "string") {
     contenedor.innerHTML = `
       <div style="background:#2a2a2a;padding:1rem;border-radius:10px;border:1px solid #444;margin-top:1rem;color:#9ae3b6">
@@ -179,20 +180,33 @@ function mostrarResultadoEPA(mensaje: string | object) {
       </div>
     `;
   } else if (typeof mensaje === "object" && mensaje !== null) {
-    const { id_epa_pk, nombre_comun, nombre_cientifico, tipo_epa_fk } = mensaje as any;
+    const {
+      id_epa_pk,
+      id_cultivo_fk,
+      estado_epa,
+      id_tipo_epa_fk,
+      nombre_tipo_epa,
+      nombre_epa,
+      descripcion_epa
+    } = mensaje as any;
+
     contenedor.innerHTML = `
       <div style="background:#1e1e1e;padding:1rem;border-radius:10px;border:1px solid #444;margin-top:1rem">
         <h3 style="color:#00bcd4;">EPA Encontrado</h3>
         <p><strong>ID:</strong> ${id_epa_pk}</p>
-        <p><strong>Nombre común:</strong> ${nombre_comun}</p>
-        <p><strong>Nombre científico:</strong> ${nombre_cientifico}</p>
-        <p><strong>Tipo EPA FK:</strong> ${tipo_epa_fk}</p>
+        <p><strong>ID Cultivo:</strong> ${id_cultivo_fk}</p>
+        <p><strong>Estado:</strong> ${estado_epa}</p>
+        <p><strong>ID Tipo EPA:</strong> ${id_tipo_epa_fk}</p>
+        <p><strong>Nombre del Tipo EPA:</strong> ${nombre_tipo_epa}</p>
+        <p><strong>Nombre EPA:</strong> ${nombre_epa}</p>
+        <p><strong>Descripción:</strong> ${descripcion_epa}</p>
       </div>
     `;
   } else {
     contenedor.innerHTML = `<p style="color:gray;">Sin datos para mostrar.</p>`;
   }
 }
+
 
 function mostrarError(err: any) {
   document.getElementById("resultado-epa")!.innerHTML = `<span style="color:red;">Error: ${err.message}</span>`;
