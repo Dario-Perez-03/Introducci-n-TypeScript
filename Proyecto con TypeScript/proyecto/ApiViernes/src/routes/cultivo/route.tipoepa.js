@@ -10,10 +10,10 @@ import {
 
 const router = Router();
 router.get('/listar', listarTiposEpa);
-router.get('/buscar/:id_tipo_epa_pk', verificarToken, buscarTipoEpaPorId);
-router.post('/registrar', verificarToken, registrarTipoEpa);
-router.put('/actualizar/:id_tipo_epa_pk', verificarToken, actualizarTipoEpa);
-router.delete('/eliminar/:id_tipo_epa_pk', verificarToken, eliminarTipoEpa);
+router.get('/buscar/:id_tipo_epa_pk',buscarTipoEpaPorId);
+router.post('/registrar',registrarTipoEpa);
+router.put('/actualizar/:id_tipo_epa_pk',actualizarTipoEpa);
+router.delete('/eliminar/:id_tipo_epa_pk', eliminarTipoEpa);
 
 router.get('/verificarToken', verificarToken);
 

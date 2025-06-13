@@ -13,12 +13,12 @@ import {
 
 const router = Router();
 router.get('/listar',listarEpas);
-router.get('/buscar/:id_epa_pk', verificarToken, buscarEpaPorId);
-router.post('/registrar', verificarToken, registrarEpa);
-router.put('/actualizar/:id_epa_pk', verificarToken, actualizarEpa);
-router.delete('/eliminar/:id_epa_pk', verificarToken, eliminarEpa);
-router.get('/tipo/:nombreTipoepa', verificarToken, buscarPorNombreTipoEpa);
-router.get('/tipo/:nombreTipoepa/epa/:nombreEspecifico', verificarToken, buscarNombreEspecifico);
+router.get('/buscar/:id_epa_pk', buscarEpaPorId);
+router.post('/registrar', registrarEpa);
+router.put('/actualizar/:id_epa_pk', actualizarEpa);
+router.delete('/eliminar/:id_epa_pk', eliminarEpa);
+router.get('/tipo/:nombreTipoepa', buscarPorNombreTipoEpa);
+router.get('/tipo/:nombreTipoepa/epa/:nombreEspecifico', buscarNombreEspecifico);
 
 router.get('/verificarToken', verificarToken);
 

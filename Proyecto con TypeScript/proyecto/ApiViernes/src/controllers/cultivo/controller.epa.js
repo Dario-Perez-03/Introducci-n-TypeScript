@@ -2,7 +2,19 @@ import { pool } from '../../database/conexion.js';
 
 export const listarEpas = async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM epas');
+        const result = await pool.query(`
+            SELECT 
+                e.id_epa_pk,
+                e.id_cultivo_fk,
+                e.estado_epa,
+                e.id_tipo_epa_fk,
+                t.nombre_tipo_epa,
+                e.nombre_epa,
+                e.descripcion_epa
+            FROM epas e
+            JOIN tipos_epas t ON e.id_tipo_epa_fk = t.id_tipo_epa_pk
+        `);
+
         if (result.rows.length > 0) {
             res.status(200).json({
                 message: 'Se listó las EPAs correctamente',
@@ -25,27 +37,36 @@ export const listarEpas = async (req, res) => {
 };
 
 
+
 export const buscarEpaPorId = async (req, res) => {
-    try {
-        const id_epa_pk = req.params.id_epa_pk;
-        const result = await pool.query('SELECT * FROM epa WHERE id_epa_pk = $1', [id_epa_pk]);
-        if (result.rows.length > 0) {
-            res.status(200).json({ message: 'EPA buscada con éxito', status: 200 });
-        } else {
-            res.status(404).json({ message: 'No se encontró la EPA con el ID proporcionado', status: 404 });
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Error al buscar EPA por ID: ' + error.message, status: 500 });
+  try {
+    const id_epa_pk = req.params.id_epa_pk;
+    const result = await pool.query('SELECT * FROM epas WHERE id_epa_pk = $1', [id_epa_pk]);
+
+    if (result.rows.length > 0) {
+      res.status(200).json({ 
+        message: 'EPA buscada con éxito', 
+        status: 200, 
+        data: result.rows[0]
+      });
+    } else {
+      res.status(404).json({ 
+        message: 'No se encontró la EPA con el ID proporcionado', 
+        status: 404 
+      });
     }
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Error al buscar EPA por ID: ' + error.message, 
+      status: 500 
+    });
+  }
 };
+
 
 export const registrarEpa = async (req, res) => {
     try {
-        const rolesPermitidos = ['administrador', 'instructor'];
-
-        if (!rolesPermitidos.includes(req.usuario.rol.toLowerCase())) {
-            return res.status(403).json({ message: 'acceso denegado: solo administradores o instructores' });
-        }
+       
         const { id_cultivo_fk, estado_epa, id_tipo_epa_fk, nombre_epa, descripcion_epa } = req.body;
         const result = await pool.query(
             'INSERT INTO epas (id_cultivo_fk, estado_epa, id_tipo_epa_fk, nombre_epa, descripcion_epa) VALUES ($1, $2, $3, $4, $5) RETURNING *',
@@ -63,15 +84,11 @@ export const registrarEpa = async (req, res) => {
 
 export const actualizarEpa = async (req, res) => {
     try {
-        const rolesPermitidos = ['administrador', 'instructor'];
-
-        if (!rolesPermitidos.includes(req.usuario.rol.toLowerCase())) {
-            return res.status(403).json({ message: 'acceso denegado: solo administradores o instructores' });
-        }
+        
         const id_epa_pk = req.params.id_epa_pk;
         const { id_cultivo_fk, estado_epa, id_tipo_epa_fk, nombre_epa, descripcion_epa } = req.body;
         const result = await pool.query(
-            'UPDATE epa SET id_cultivo_fk = $1, estado_epa = $2, id_tipo_epa_fk = $3, nombre_epa = $4, descripcion_epa = $5 WHERE id_epa_pk = $6 RETURNING *',
+            'UPDATE epas SET id_cultivo_fk = $1, estado_epa = $2, id_tipo_epa_fk = $3, nombre_epa = $4, descripcion_epa = $5 WHERE id_epa_pk = $6 RETURNING *',
             [id_cultivo_fk, estado_epa, id_tipo_epa_fk, nombre_epa, descripcion_epa, id_epa_pk]
         );
         if (result.rows.length > 0) {
@@ -86,13 +103,9 @@ export const actualizarEpa = async (req, res) => {
 
 export const eliminarEpa = async (req, res) => {
     try {
-        const rolesPermitidos = ['administrador', 'instructor'];
-
-        if (!rolesPermitidos.includes(req.usuario.rol.toLowerCase())) {
-            return res.status(403).json({ message: 'acceso denegado: solo administradores o instructores' });
-        }
+        
         const id_epa_pk = req.params.id_epa_pk;
-        const result = await pool.query('DELETE FROM epa WHERE id_epa_pk = $1 RETURNING *', [id_epa_pk]);
+        const result = await pool.query('DELETE FROM epas WHERE id_epa_pk = $1 RETURNING *', [id_epa_pk]);
         if (result.rows.length > 0) {
             res.status(200).json({ message: 'EPA eliminada con éxito', status: 200 });
         } else {
